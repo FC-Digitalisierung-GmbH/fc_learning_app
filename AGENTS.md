@@ -12,7 +12,7 @@ This file provides guidance to any coding agent when working with code in this r
 
 ## Architecture
 
-**Clean Architecture, feature-module layout.**
+**Clean Architecture, component-module layout.**
 
 ## Code Guidelines
 
@@ -20,15 +20,6 @@ This file provides guidance to any coding agent when working with code in this r
   that can be used here or fit the purpose (normally under `lib/Components/`), and use our theming and style**
 
 - **Check `lib/Utils` when implementing new features if there is existing functionality to solve a problem**
-
-### Layers
-
-| Layer          | Location                                       | Role                                      |
-|----------------|------------------------------------------------|-------------------------------------------|
-| Presentation   | `lib/<Feature>/*_page.dart`, `lib/Components/` | UI, shared widgets                        |
-| Business Logic | `lib/<Feature>/*_service.dart/`                | API calls, logic methods called by the ui |
-| Data           | `lib/<Feature>/models/*_model.dart`            | DTOs                                      |
-| API            | `lib/api_client.dart/`                         | HTTP client                               |
 
 ### Key Packages
 
