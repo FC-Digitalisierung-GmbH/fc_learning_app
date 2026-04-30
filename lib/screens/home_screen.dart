@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:fc_learning_app/leaderboard/leaderboard_screen.dart';
 import 'package:fc_learning_app/models/category.dart';
 import 'package:fc_learning_app/screens/quiz_screen.dart';
 import 'package:fc_learning_app/services/trivia_api.dart';
@@ -76,9 +77,25 @@ class _HomeScreenState extends State<HomeScreen> {
                     )
                   : const Text('Start', style: TextStyle(fontSize: 18)),
             ),
+            const SizedBox(height: 8),
+            OutlinedButton.icon(
+              onPressed: _loading ? null : _onLeaderboardPressed,
+              icon: const Icon(Icons.leaderboard),
+              label: const Text('Leaderboard', style: TextStyle(fontSize: 18)),
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
+            ),
           ],
         ),
       ),
+    );
+  }
+
+  void _onLeaderboardPressed() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const LeaderboardScreen()),
     );
   }
 
@@ -129,16 +146,23 @@ class _HomeScreenState extends State<HomeScreen> {
       !_loading && _selectedCategory != null && _categoriesError == null;
 
   Future<void> _onStartPressed() async {
-    final category = _selectedCategory;
-    if (category == null) return;
+    final categoryId = _selectedCategory;
+    final categories = _categories;
+    if (categoryId == null || categories == null) return;
+    final categoryName =
+        categories.firstWhere((c) => c.id == categoryId).name;
     setState(() => _loading = true);
     try {
-      final questions = await _api.fetchQuestions(category: category);
+      final questions = await _api.fetchQuestions(category: categoryId);
       if (!mounted) return;
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => QuizScreen(questions: questions),
+          builder: (_) => QuizScreen(
+            questions: questions,
+            categoryId: categoryId,
+            categoryName: categoryName,
+          ),
         ),
       );
     } catch (e) {
