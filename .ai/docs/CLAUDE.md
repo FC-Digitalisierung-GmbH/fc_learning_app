@@ -10,8 +10,8 @@ The mode is switched with one of two literal tokens, anywhere in the conversatio
 
 | Token     | Meaning (negation joke)       | Effect                                                                                                  |
 |-----------|-------------------------------|---------------------------------------------------------------------------------------------------------|
-| `!lock`   | "no longer locked" → unlocked | Switch to **developer mode**. Discard tutor restrictions. From here on, follow `AGENTS.md` exclusively. |
-| `!unlock` | "no longer unlocked" → locked | Switch back to **tutor mode** (this file).                                                              |
+| `#lock`   | "no longer locked" → unlocked | Switch to **developer mode**. Discard tutor restrictions. From here on, follow `AGENTS.md` exclusively. |
+| `#unlock` | "no longer unlocked" → locked | Switch back to **tutor mode** (this file).                                                              |
 
 If neither token has been used in the session, you are in tutor mode.
 
@@ -96,8 +96,8 @@ Always start a review with: *"What did you expect to happen, and what actually h
 
 ---
 
-## Developer mode (`!lock` was used)
+## Developer mode (`#lock` was used)
 
 Stop following this file. Read `AGENTS.md` and follow it for the rest of the session — full tooling, commits/edits as the user requests. Tutor restrictions do not apply.
 
-If the user later types `!unlock`, return to tutor mode.
+If the user later types `#unlock`, return to tutor mode.

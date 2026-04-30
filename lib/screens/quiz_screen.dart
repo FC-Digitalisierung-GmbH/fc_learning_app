@@ -65,15 +65,16 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   void _onAnswerTap(String tapped, String correct) {
-    if (tapped == correct) _score++;
-    if (_currentIndex + 1 < widget.questions.length) {
-      setState(() {
-        _currentIndex++;
-        _answers = widget.questions[_currentIndex].shuffledAnswers;
-      });
-      return;
-    }
-    _onQuizFinished();
+    // TODO(trainee): handle a tapped answer.
+    //
+    //   1. If `tapped` equals `correct`, increase `_score` by 1.
+    //   2. If there is still another question left:
+    //        - advance `_currentIndex` to the next question
+    //        - refresh `_answers` from the new question's `shuffledAnswers`
+    //        - remember: changes to state fields the UI reads must happen
+    //          inside `setState(() { ... })` so the screen rebuilds
+    //        - then return, so the finish methode doesn't also run
+    //   3. Otherwise (no more questions left), call `_onQuizFinished()`.
   }
 
   void _onQuizFinished() {
