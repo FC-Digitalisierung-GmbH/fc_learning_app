@@ -3,11 +3,15 @@ class QuizResult {
   final int score;
   final int total;
   final DateTime finishedAt;
+  final int categoryId;
+  final String categoryName;
 
   const QuizResult({
     required this.score,
     required this.total,
     required this.finishedAt,
+    required this.categoryId,
+    required this.categoryName,
   });
 
   /// Score as a percentage between 0 and 100.

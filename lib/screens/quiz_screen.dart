@@ -8,8 +8,15 @@ import 'package:fc_learning_app/widgets/question_card.dart';
 
 class QuizScreen extends StatefulWidget {
   final List<Question> questions;
+  final int categoryId;
+  final String categoryName;
 
-  const QuizScreen({super.key, required this.questions});
+  const QuizScreen({
+    super.key,
+    required this.questions,
+    required this.categoryId,
+    required this.categoryName,
+  });
 
   @override
   State<QuizScreen> createState() => _QuizScreenState();
@@ -73,6 +80,8 @@ class _QuizScreenState extends State<QuizScreen> {
         score: _score,
         total: widget.questions.length,
         finishedAt: DateTime.now(),
+        categoryId: widget.categoryId,
+        categoryName: widget.categoryName,
       );
       Navigator.pushReplacement(
         context,
