@@ -3,11 +3,25 @@ import 'dart:convert';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:http/http.dart' as http;
 
+import 'package:fc_learning_app/models/category.dart';
 import 'package:fc_learning_app/models/question.dart';
 
 class TriviaApi {
   static const String _base = 'https://opentdb.com/api.php';
+  static const String _categoriesUrl = 'https://opentdb.com/api_category.php';
   final HtmlUnescape _unescape = HtmlUnescape();
+
+  Future<List<Category>> fetchCategories() async {
+    final response = await http.get(Uri.parse(_categoriesUrl));
+    if (response.statusCode != 200) {
+      throw Exception('Categories API failed: ${response.statusCode}');
+    }
+    final body = jsonDecode(response.body) as Map<String, dynamic>;
+    final list = body['trivia_categories'] as List;
+    return list
+        .map((raw) => Category.fromJson(raw as Map<String, dynamic>))
+        .toList();
+  }
 
   Future<List<Question>> fetchQuestions({
     int amount = 10,

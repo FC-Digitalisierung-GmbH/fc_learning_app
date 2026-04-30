@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:fc_learning_app/models/category.dart';
 import 'package:fc_learning_app/screens/quiz_screen.dart';
 import 'package:fc_learning_app/services/trivia_api.dart';
 
@@ -11,16 +12,36 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // Open Trivia DB category id. 9 = General Knowledge, 18 = Computers, etc.
-  int _selectedCategory = 9;
+  final TriviaApi _api = TriviaApi();
+
+  List<Category>? _categories;
+  String? _categoriesError;
+  int? _selectedCategory;
   bool _loading = false;
 
-  static const List<DropdownMenuItem<int>> _categories = [
-    DropdownMenuItem(value: 9, child: Text('General Knowledge')),
-    DropdownMenuItem(value: 18, child: Text('Computers')),
-    DropdownMenuItem(value: 23, child: Text('History')),
-    DropdownMenuItem(value: 21, child: Text('Sports')),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _loadCategories();
+  }
+
+  Future<void> _loadCategories() async {
+    setState(() {
+      _categoriesError = null;
+      _categories = null;
+    });
+    try {
+      final categories = await _api.fetchCategories();
+      if (!mounted) return;
+      setState(() {
+        _categories = categories;
+        _selectedCategory = categories.isNotEmpty ? categories.first.id : null;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _categoriesError = e.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,21 +61,10 @@ class _HomeScreenState extends State<HomeScreen> {
               style: TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 24),
-            DropdownButtonFormField<int>(
-              initialValue: _selectedCategory,
-              decoration: const InputDecoration(
-                labelText: 'Category',
-                border: OutlineInputBorder(),
-              ),
-              items: _categories,
-              onChanged: (value) {
-                if (value == null) return;
-                setState(() => _selectedCategory = value);
-              },
-            ),
+            _buildCategoryField(),
             const SizedBox(height: 32),
             ElevatedButton(
-              onPressed: _onStartPressed,
+              onPressed: _canStart() ? _onStartPressed : null,
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 16),
               ),
@@ -72,12 +82,58 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget _buildCategoryField() {
+    if (_categoriesError != null) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'Could not load categories: $_categoriesError',
+            style: const TextStyle(color: Colors.red),
+          ),
+          const SizedBox(height: 8),
+          OutlinedButton.icon(
+            onPressed: _loadCategories,
+            icon: const Icon(Icons.refresh),
+            label: const Text('Retry'),
+          ),
+        ],
+      );
+    }
+    if (_categories == null) {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 12),
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+    return DropdownButtonFormField<int>(
+      initialValue: _selectedCategory,
+      decoration: const InputDecoration(
+        labelText: 'Category',
+        border: OutlineInputBorder(),
+      ),
+      items: [
+        for (final c in _categories!)
+          DropdownMenuItem(value: c.id, child: Text(c.name)),
+      ],
+      onChanged: (value) {
+        if (value == null) return;
+        setState(() => _selectedCategory = value);
+      },
+    );
+  }
+
+  bool _canStart() =>
+      !_loading && _selectedCategory != null && _categoriesError == null;
+
   Future<void> _onStartPressed() async {
+    final category = _selectedCategory;
+    if (category == null) return;
     setState(() => _loading = true);
     try {
-      final api = TriviaApi();
-      final questions =
-          await api.fetchQuestions(category: _selectedCategory);
+      final questions = await _api.fetchQuestions(category: category);
       if (!mounted) return;
       Navigator.push(
         context,
