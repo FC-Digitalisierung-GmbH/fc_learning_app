@@ -21,6 +21,8 @@ This file provides guidance to any coding agent when working with code in this r
 
 - **Check `lib/Utils` when implementing new features if there is existing functionality to solve a problem**
 
+- **Spacing between siblings**: in `Row`, `Column`, and `Wrap`, use the `spacing:` parameter (and `runSpacing:` for `Wrap`) to space children — **never** insert `SizedBox(width: …)` / `SizedBox(height: …)` between siblings. `SizedBox` is reserved for cases where a widget actually needs a fixed dimension (e.g., a sized progress indicator, a min-height placeholder, a `ListView.separated` separator). For dynamically built children lists, pass the list directly to the row/column and let `spacing:` handle gaps — don't append spacer widgets in a loop.
+
 ### Layers
 
 | Layer          | Location                                       | Role                                      |
