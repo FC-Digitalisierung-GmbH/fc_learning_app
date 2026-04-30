@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:fc_learning_app/theme/app_theme.dart';
 import 'screens/home_screen.dart';
 
 void main() {
@@ -14,10 +15,7 @@ class FcQuizApp extends StatelessWidget {
     return MaterialApp(
       title: 'FC Quiz',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
-        useMaterial3: true,
-      ),
+      theme: buildAppTheme(),
       home: const HomeScreen(),
     );
   }

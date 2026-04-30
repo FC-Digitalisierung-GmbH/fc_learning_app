@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:fc_learning_app/models/leaderboard_entry.dart';
-import 'package:fc_learning_app/services/leaderboard_repository.dart';
 import 'package:fc_learning_app/models/quiz_result.dart';
+import 'package:fc_learning_app/services/leaderboard_repository.dart';
+import 'package:fc_learning_app/widgets/primary_button.dart';
+import 'package:fc_learning_app/widgets/secondary_button.dart';
 
 class ResultScreen extends StatefulWidget {
   final QuizResult result;
@@ -43,6 +45,7 @@ class _ResultScreenState extends State<ResultScreen> {
   @override
   Widget build(BuildContext context) {
     final result = widget.result;
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(title: const Text('Result')),
       body: Padding(
@@ -52,7 +55,7 @@ class _ResultScreenState extends State<ResultScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           spacing: 16,
           children: [
-            const Icon(Icons.emoji_events, size: 96),
+            Icon(Icons.emoji_events, size: 96, color: theme.colorScheme.primary),
             Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               spacing: 4,
@@ -60,17 +63,19 @@ class _ResultScreenState extends State<ResultScreen> {
                 Text(
                   '${result.score} / ${result.total}',
                   textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+                  style: theme.textTheme.headlineLarge,
                 ),
                 Text(
                   result.summary,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 20),
+                  style: theme.textTheme.titleLarge,
                 ),
                 Text(
                   result.categoryName,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 14, color: Colors.black54),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.secondary.withValues(alpha: 0.7),
+                  ),
                 ),
               ],
             ),
@@ -81,32 +86,20 @@ class _ResultScreenState extends State<ResultScreen> {
               decoration: const InputDecoration(
                 labelText: 'Your name',
                 helperText: 'Between 3 and 20 characters',
-                border: OutlineInputBorder(),
               ),
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               spacing: 8,
               children: [
-                ElevatedButton(
+                PrimaryButton(
+                  label: 'Save',
+                  loading: _saving,
                   onPressed: _canSave ? _onSavePressed : null,
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                  ),
-                  child: _saving
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Text('Save', style: TextStyle(fontSize: 18)),
                 ),
-                OutlinedButton(
+                SecondaryButton(
+                  label: 'Restart',
                   onPressed: _saving ? null : () => _onRestartPressed(context),
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                  ),
-                  child: const Text('Restart', style: TextStyle(fontSize: 18)),
                 ),
               ],
             ),

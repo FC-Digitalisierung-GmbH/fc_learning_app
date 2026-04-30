@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-/// One tappable answer on the quiz screen.
+/// One tappable answer on the quiz screen. Visuals come from the app theme's
+/// `elevatedButtonTheme`.
 class AnswerButton extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
@@ -19,17 +20,7 @@ class AnswerButton extends StatelessWidget {
         width: double.infinity,
         child: ElevatedButton(
           onPressed: onTap,
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-          child: Text(
-            label,
-            style: const TextStyle(fontSize: 16),
-            textAlign: TextAlign.center,
-          ),
+          child: Text(label, textAlign: TextAlign.center),
         ),
       ),
     );

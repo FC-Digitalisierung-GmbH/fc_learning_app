@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
-import 'package:fc_learning_app/screens/leaderboard_screen.dart';
 import 'package:fc_learning_app/models/category.dart';
+import 'package:fc_learning_app/screens/leaderboard_screen.dart';
 import 'package:fc_learning_app/screens/quiz_screen.dart';
 import 'package:fc_learning_app/services/trivia_api.dart';
+import 'package:fc_learning_app/widgets/category_dropdown.dart';
+import 'package:fc_learning_app/widgets/primary_button.dart';
+import 'package:fc_learning_app/widgets/secondary_button.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -53,28 +56,56 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          spacing: 40,
+          spacing: 48,
           children: [
-            const Icon(Icons.quiz_outlined, size: 96),
-            const Text(
-              'Pick a category and test yourself.',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16),
+            Column(
+              spacing: 16,
+              children: [
+                Icon(Icons.quiz_outlined, size: 96, color: Theme.of(context).colorScheme.primary),
+                Text(
+                  'Welcome to the FC Quiz App!',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
+              ],
             ),
-            _buildCategoryField(),
-            ElevatedButton.icon(
-              onPressed: _canStart() ? _onStartPressed : null,
-              style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
-              icon: const Icon(Icons.play_arrow),
-              label: _loading
-                  ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2))
-                  : const Text('Start', style: TextStyle(fontSize: 18)),
+            Column(
+              spacing: 8,
+              children: [
+                Text(
+                  'Test your knowledge across various topics.',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                Text(
+                  'Earn points and climb the leaderboard.',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+              ],
             ),
-            OutlinedButton.icon(
-              onPressed: _loading ? null : _onLeaderboardPressed,
-              icon: const Icon(Icons.leaderboard),
-              label: const Text('Leaderboard', style: TextStyle(fontSize: 18)),
-              style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
+            CategoryDropdown(
+              categories: _categories,
+              error: _categoriesError,
+              selectedId: _selectedCategory,
+              onChanged: (value) => setState(() => _selectedCategory = value),
+              onRetry: _loadCategories,
+            ),
+            Column(
+              spacing: 16,
+              children: [
+                PrimaryButton(
+                  label: 'Start',
+                  icon: Icons.play_arrow,
+                  loading: _loading,
+                  onPressed: _canStart() ? _onStartPressed : null,
+                ),
+                SecondaryButton(
+                  label: 'Leaderboard',
+                  icon: Icons.leaderboard,
+                  onPressed: _loading ? null : _onLeaderboardPressed,
+                ),
+              ],
             ),
           ],
         ),
@@ -84,33 +115,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _onLeaderboardPressed() {
     Navigator.push(context, MaterialPageRoute(builder: (_) => const LeaderboardScreen()));
-  }
-
-  Widget _buildCategoryField() {
-    if (_categoriesError != null) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        spacing: 8,
-        children: [
-          Text('Could not load categories: $_categoriesError', style: const TextStyle(color: Colors.red)),
-          OutlinedButton.icon(onPressed: _loadCategories, icon: const Icon(Icons.refresh), label: const Text('Retry')),
-        ],
-      );
-    }
-    if (_categories == null) {
-      return const Center(
-        child: Padding(padding: EdgeInsets.symmetric(vertical: 12), child: CircularProgressIndicator()),
-      );
-    }
-    return DropdownButtonFormField<int>(
-      initialValue: _selectedCategory,
-      decoration: const InputDecoration(labelText: 'Category', border: OutlineInputBorder()),
-      items: [for (final c in _categories!) DropdownMenuItem(value: c.id, child: Text(c.name))],
-      onChanged: (value) {
-        if (value == null) return;
-        setState(() => _selectedCategory = value);
-      },
-    );
   }
 
   bool _canStart() => !_loading && _selectedCategory != null && _categoriesError == null;

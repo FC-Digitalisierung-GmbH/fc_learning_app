@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-/// Card that displays the current question text.
+/// Card that displays the current question text. Visuals come from the app
+/// theme's `cardTheme`.
 class QuestionCard extends StatelessWidget {
   final String text;
 
@@ -9,14 +10,12 @@ class QuestionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Text(
           text,
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
           textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.titleMedium,
         ),
       ),
     );
