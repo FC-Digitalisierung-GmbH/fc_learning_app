@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:fc_learning_app/models/category.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -8,15 +10,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // Open Trivia DB category id. 9 = General Knowledge, 18 = Computers, etc.
-  int _selectedCategory = 9;
+  // TODO(trainee): populate this with categories from TriviaApi.fetchCategories.
+  // Until then the dropdown stays empty and disabled.
+  final List<Category> _categories = const [];
 
-  static const List<DropdownMenuItem<int>> _categories = [
-    DropdownMenuItem(value: 9, child: Text('General Knowledge')),
-    DropdownMenuItem(value: 18, child: Text('Computers')),
-    DropdownMenuItem(value: 23, child: Text('History')),
-    DropdownMenuItem(value: 21, child: Text('Sports')),
-  ];
+  int? _selectedCategoryId;
+  // ignore: prefer_final_fields
+  bool _loading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Icon(Icons.quiz, size: 96),
+            const Icon(Icons.quiz_outlined, size: 96),
             const SizedBox(height: 32),
             const Text(
               'Pick a category and test yourself.',
@@ -36,25 +36,30 @@ class _HomeScreenState extends State<HomeScreen> {
               style: TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 24),
-            DropdownButtonFormField<int>(
-              initialValue: _selectedCategory,
-              decoration: const InputDecoration(
-                labelText: 'Category',
-                border: OutlineInputBorder(),
-              ),
-              items: _categories,
-              onChanged: (value) {
-                if (value == null) return;
-                setState(() => _selectedCategory = value);
-              },
-            ),
+            _buildCategoryField(),
             const SizedBox(height: 32),
-            ElevatedButton(
-              onPressed: _onStartPressed,
+            ElevatedButton.icon(
+              onPressed: _selectedCategoryId == null ? null : _onStartPressed,
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 16),
               ),
-              child: const Text('Start', style: TextStyle(fontSize: 18)),
+              icon: const Icon(Icons.play_arrow),
+              label: _loading
+                  ? const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Text('Start', style: TextStyle(fontSize: 18)),
+            ),
+            const SizedBox(height: 8),
+            OutlinedButton.icon(
+              onPressed: _onLeaderboardPressed,
+              icon: const Icon(Icons.leaderboard),
+              label: const Text('Leaderboard', style: TextStyle(fontSize: 18)),
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
             ),
           ],
         ),
@@ -62,18 +67,56 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget _buildCategoryField() {
+    if (_categories.isEmpty) {
+      return InputDecorator(
+        decoration: const InputDecoration(
+          labelText: 'Category',
+          border: OutlineInputBorder(),
+          enabled: false,
+        ),
+        child: const Text(
+          'No categories',
+          style: TextStyle(color: Colors.black54),
+        ),
+      );
+    }
+    return DropdownButtonFormField<int>(
+      initialValue: _selectedCategoryId,
+      decoration: const InputDecoration(
+        labelText: 'Category',
+        border: OutlineInputBorder(),
+      ),
+      items: [
+        for (final c in _categories)
+          DropdownMenuItem(value: c.id, child: Text(c.name)),
+      ],
+      onChanged: (value) {
+        if (value == null) return;
+        setState(() => _selectedCategoryId = value);
+      },
+    );
+  }
+
   void _onStartPressed() {
-    // TODO(trainee): wire the start button.
+    // TODO(trainee): wire the Start button.
     //
     // Steps:
-    //  1. Create a TriviaApi() instance.
-    //  2. Call fetchQuestions(category: _selectedCategory).
-    //  3. While loading, show a CircularProgressIndicator (hint: a bool field
-    //     `_loading` plus setState).
-    //  4. On success, Navigator.push to QuizScreen with the questions list.
-    //  5. On error, show a SnackBar with the error message.
+    //  1. Look up the selected Category (id + name) from _categories.
+    //  2. setState(() => _loading = true) so the spinner shows.
+    //  3. Call TriviaApi().fetchQuestions(category: id).
+    //  4. Navigator.push to QuizScreen with questions, categoryId, categoryName.
+    //  5. Reset _loading in a finally block.
+    //  6. On error, show a SnackBar.
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('TODO(trainee): wire Start button')),
+    );
+  }
+
+  void _onLeaderboardPressed() {
+    // TODO(trainee): Navigator.push to LeaderboardScreen.
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('TODO(trainee): wire Leaderboard button')),
     );
   }
 }
