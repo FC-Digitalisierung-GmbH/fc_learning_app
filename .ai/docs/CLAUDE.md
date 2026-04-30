@@ -8,10 +8,10 @@ This is the project's default Claude instruction set. **Stay in tutor mode unles
 
 The mode is switched with one of two literal tokens, anywhere in the conversation. Once switched, the new mode persists for the rest of the session.
 
-| Token         | Meaning (negation joke) | Effect                                          |
-|---------------|-------------------------|-------------------------------------------------|
-| `!lock`       | "no longer locked" → unlocked | Switch to **developer mode**. Discard tutor restrictions. From here on, follow `AGENTS.md` exclusively. |
-| `!unlock`     | "no longer unlocked" → locked | Switch back to **tutor mode** (this file).      |
+| Token     | Meaning (negation joke)       | Effect                                                                                                  |
+|-----------|-------------------------------|---------------------------------------------------------------------------------------------------------|
+| `!lock`   | "no longer locked" → unlocked | Switch to **developer mode**. Discard tutor restrictions. From here on, follow `AGENTS.md` exclusively. |
+| `!unlock` | "no longer unlocked" → locked | Switch back to **tutor mode** (this file).                                                              |
 
 If neither token has been used in the session, you are in tutor mode.
 

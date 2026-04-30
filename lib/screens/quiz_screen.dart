@@ -9,12 +9,7 @@ class QuizScreen extends StatefulWidget {
   final int categoryId;
   final String categoryName;
 
-  const QuizScreen({
-    super.key,
-    required this.questions,
-    required this.categoryId,
-    required this.categoryName,
-  });
+  const QuizScreen({super.key, required this.questions, required this.categoryId, required this.categoryName});
 
   @override
   State<QuizScreen> createState() => _QuizScreenState();
@@ -41,10 +36,7 @@ class _QuizScreenState extends State<QuizScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Center(
-              child: Text(
-                '${_currentIndex + 1} / ${widget.questions.length}',
-                style: const TextStyle(fontSize: 16),
-              ),
+              child: Text('${_currentIndex + 1} / ${widget.questions.length}', style: const TextStyle(fontSize: 16)),
             ),
           ),
         ],
@@ -61,11 +53,7 @@ class _QuizScreenState extends State<QuizScreen> {
                 child: Column(
                   children: [
                     for (final answer in _answers)
-                      AnswerButton(
-                        label: answer,
-                        onTap: () =>
-                            _onAnswerTap(answer, question.correctAnswer),
-                      ),
+                      AnswerButton(label: answer, onTap: () => _onAnswerTap(answer, question.correctAnswer)),
                   ],
                 ),
               ),
@@ -92,22 +80,14 @@ class _QuizScreenState extends State<QuizScreen> {
     // TODO(trainee): build a QuizResult and Navigator.pushReplacement to ResultScreen.
     //
     //   final result = QuizResult(
-    //     score: _score,
-    //     total: widget.questions.length,
-    //     finishedAt: DateTime.now(),
-    //     categoryId: widget.categoryId,
-    //     categoryName: widget.categoryName,
-    //   );
-    //   Navigator.pushReplacement(
-    //     context,
-    //     MaterialPageRoute(builder: (_) => ResultScreen(result: result)),
+    //     score: ...,
+    //     total: ...,
+    //     finishedAt: ...,
+    //     categoryId: ...,
+    //     categoryName: ...,
     //   );
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'TODO(trainee): wire ResultScreen — score $_score / ${widget.questions.length}',
-        ),
-      ),
+      SnackBar(content: Text('TODO(trainee): wire ResultScreen — score $_score / ${widget.questions.length}')),
     );
   }
 }
