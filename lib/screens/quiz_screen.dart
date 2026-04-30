@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:fc_learning_app/models/question.dart';
+import 'package:fc_learning_app/models/quiz_result.dart';
+import 'package:fc_learning_app/screens/result_screen.dart';
 import 'package:fc_learning_app/widgets/answer_button.dart';
 import 'package:fc_learning_app/widgets/question_card.dart';
 
@@ -14,33 +16,19 @@ class QuizScreen extends StatefulWidget {
 }
 
 class _QuizScreenState extends State<QuizScreen> {
-  // TODO(trainee): track quiz progress.
-  //
-  // You will need at least:
-  //   int _currentIndex = 0;
-  //   int _score = 0;
-  //
-  // When the user taps an answer:
-  //  1. Compare the tapped label with question.correctAnswer.
-  //  2. If correct, increment _score.
-  //  3. If there are more questions, increment _currentIndex with setState.
-  //  4. Otherwise, build a QuizResult and Navigator.pushReplacement to ResultScreen.
+  int _currentIndex = 0;
+  int _score = 0;
+  late List<String> _answers;
+
+  @override
+  void initState() {
+    super.initState();
+    _answers = widget.questions[_currentIndex].shuffledAnswers;
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Static placeholder so the screen renders even before the trainee
-    // implements the state logic. They will replace this with the real one.
-    final placeholder = widget.questions.isNotEmpty
-        ? widget.questions.first
-        : const Question(
-            text: 'Placeholder question — implement state logic to see real ones.',
-            correctAnswer: 'A',
-            incorrectAnswers: ['B', 'C', 'D'],
-            category: 'Demo',
-            difficulty: 'easy',
-          );
-    final answers = placeholder.shuffledAnswers;
-
+    final question = widget.questions[_currentIndex];
     return Scaffold(
       appBar: AppBar(
         title: const Text('Quiz'),
@@ -49,7 +37,7 @@ class _QuizScreenState extends State<QuizScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Center(
               child: Text(
-                '0 / ${widget.questions.length}', // TODO(trainee): real index
+                '${_currentIndex + 1} / ${widget.questions.length}',
                 style: const TextStyle(fontSize: 16),
               ),
             ),
@@ -60,12 +48,12 @@ class _QuizScreenState extends State<QuizScreen> {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            QuestionCard(text: placeholder.text),
+            QuestionCard(text: question.text),
             const SizedBox(height: 24),
-            for (final answer in answers)
+            for (final answer in _answers)
               AnswerButton(
                 label: answer,
-                onTap: () => _onAnswerTap(answer, placeholder.correctAnswer),
+                onTap: () => _onAnswerTap(answer, question.correctAnswer),
               ),
           ],
         ),
@@ -74,12 +62,22 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   void _onAnswerTap(String tapped, String correct) {
-    // TODO(trainee): replace this stub with real progression logic.
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(tapped == correct ? 'Correct!' : 'Wrong — was $correct'),
-        duration: const Duration(milliseconds: 600),
-      ),
-    );
+    if (tapped == correct) _score++;
+    if (_currentIndex + 1 < widget.questions.length) {
+      setState(() {
+        _currentIndex++;
+        _answers = widget.questions[_currentIndex].shuffledAnswers;
+      });
+    } else {
+      final result = QuizResult(
+        score: _score,
+        total: widget.questions.length,
+        finishedAt: DateTime.now(),
+      );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => ResultScreen(result: result)),
+      );
+    }
   }
 }

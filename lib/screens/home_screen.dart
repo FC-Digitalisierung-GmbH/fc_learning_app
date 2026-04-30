@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'package:fc_learning_app/screens/quiz_screen.dart';
+import 'package:fc_learning_app/services/trivia_api.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -10,6 +13,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   // Open Trivia DB category id. 9 = General Knowledge, 18 = Computers, etc.
   int _selectedCategory = 9;
+  bool _loading = false;
 
   static const List<DropdownMenuItem<int>> _categories = [
     DropdownMenuItem(value: 9, child: Text('General Knowledge')),
@@ -54,7 +58,13 @@ class _HomeScreenState extends State<HomeScreen> {
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 16),
               ),
-              child: const Text('Start', style: TextStyle(fontSize: 18)),
+              child: _loading
+                  ? const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Text('Start', style: TextStyle(fontSize: 18)),
             ),
           ],
         ),
@@ -62,18 +72,26 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _onStartPressed() {
-    // TODO(trainee): wire the start button.
-    //
-    // Steps:
-    //  1. Create a TriviaApi() instance.
-    //  2. Call fetchQuestions(category: _selectedCategory).
-    //  3. While loading, show a CircularProgressIndicator (hint: a bool field
-    //     `_loading` plus setState).
-    //  4. On success, Navigator.push to QuizScreen with the questions list.
-    //  5. On error, show a SnackBar with the error message.
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('TODO(trainee): wire Start button')),
-    );
+  Future<void> _onStartPressed() async {
+    setState(() => _loading = true);
+    try {
+      final api = TriviaApi();
+      final questions =
+          await api.fetchQuestions(category: _selectedCategory);
+      if (!mounted) return;
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => QuizScreen(questions: questions),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to load questions: $e')),
+      );
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
   }
 }

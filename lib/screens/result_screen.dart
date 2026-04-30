@@ -45,12 +45,6 @@ class ResultScreen extends StatelessWidget {
   }
 
   void _onRestartPressed(BuildContext context) {
-    // TODO(trainee): pop back to HomeScreen.
-    //
-    // Hint: Navigator.popUntil(context, (route) => route.isFirst)
-    // sends the user back to the very first screen in the stack.
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('TODO(trainee): wire Restart button')),
-    );
+    Navigator.popUntil(context, (route) => route.isFirst);
   }
 }
