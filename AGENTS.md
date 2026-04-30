@@ -4,8 +4,8 @@ This file provides guidance to any coding agent when working with code in this r
 
 ## General Guidelines
 
-- **NEVER commit or push any code! You can read from the git history, but all executive git functionality (checkout, pull, commit, push, etc.) is forbidden!
-  If there should be a case where it is a necessity need to do a git operation, you ask for permission first.**
+- **NEVER push any code!
+  If there should be a case where it is a necessity need to do a git push, you ask for permission first.**
 
 - **Use the local folder ".ai" for any meta files that are used for agentic development like plans (`.ai/plans`), documentation (`.ai/docs`) or notes (`.ai/notes`).
   Ignore agent specific behavior in that regard. If a feature (e.g. unit testing) requires multiple plans for example, create a subfolder (`.ai/plans/unit_testing`) inside the AI subfolder.**
