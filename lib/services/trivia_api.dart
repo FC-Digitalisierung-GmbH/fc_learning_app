@@ -1,31 +1,56 @@
+import 'dart:convert';
+
+import 'package:html_unescape/html_unescape.dart';
+import 'package:http/http.dart' as http;
+
+import 'package:fc_learning_app/models/category.dart';
 import 'package:fc_learning_app/models/question.dart';
 
 /// Client for the Open Trivia DB.
 ///
 /// API docs: https://opentdb.com/api_config.php
 class TriviaApi {
-  // TODO(trainee): implement fetchQuestions.
-  //
-  // Steps:
-  //  1. Build the URL with the given params, e.g.
-  //     https://opentdb.com/api.php?amount=10&category=18&difficulty=easy&type=multiple
-  //  2. Use the `http` package: http.get(Uri.parse(url))
-  //  3. Check response.statusCode == 200, throw otherwise
-  //  4. jsonDecode the body — it's a Map<String, dynamic>
-  //  5. The "results" key holds a List of question maps
-  //  6. For each map: Question.fromJson(map)
-  //  7. Decode HTML entities in question + answer text using the
-  //     `html_unescape` package (HtmlUnescape().convert(...))
-  //
-  // Imports you'll likely need:
-  //   import 'dart:convert';
-  //   import 'package:http/http.dart' as http;
-  //   import 'package:html_unescape/html_unescape.dart';
+  static const String _base = 'https://opentdb.com/api.php';
+  static const String _categoriesUrl = 'https://opentdb.com/api_category.php';
+  final HtmlUnescape _unescape = HtmlUnescape();
+
+  Future<List<Category>> fetchCategories() async {
+    final response = await http.get(Uri.parse(_categoriesUrl));
+    if (response.statusCode != 200) {
+      throw Exception('Categories API failed: ${response.statusCode}');
+    }
+    final body = jsonDecode(response.body) as Map<String, dynamic>;
+    final list = body['trivia_categories'] as List;
+    return list
+        .map((raw) => Category.fromJson(raw as Map<String, dynamic>))
+        .toList();
+  }
+
   Future<List<Question>> fetchQuestions({
     int amount = 10,
-    int category = 18, // 18 = Computers
+    int category = 18,
     String difficulty = 'easy',
   }) async {
-    throw UnimplementedError('TODO(trainee): implement fetchQuestions');
+    final uri = Uri.parse(
+      '$_base?amount=$amount&category=$category&difficulty=$difficulty&type=multiple',
+    );
+    final response = await http.get(uri);
+    if (response.statusCode != 200) {
+      throw Exception('Trivia API failed: ${response.statusCode}');
+    }
+    final body = jsonDecode(response.body) as Map<String, dynamic>;
+    final results = body['results'] as List;
+    return results.map((raw) {
+      final map = raw as Map<String, dynamic>;
+      return Question(
+        text: _unescape.convert(map['question'] as String),
+        correctAnswer: _unescape.convert(map['correct_answer'] as String),
+        incorrectAnswers: (map['incorrect_answers'] as List)
+            .map((e) => _unescape.convert(e as String))
+            .toList(),
+        category: map['category'] as String,
+        difficulty: map['difficulty'] as String,
+      );
+    }).toList();
   }
 }

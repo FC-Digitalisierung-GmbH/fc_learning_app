@@ -21,22 +21,15 @@ class Question {
     return all;
   }
 
-  // TODO(trainee): build a Question from the JSON the API returns.
-  //
-  // The API returns a Map that looks like:
-  // {
-  //   "question": "What is ...?",
-  //   "correct_answer": "Paris",
-  //   "incorrect_answers": ["London", "Berlin", "Madrid"],
-  //   "category": "Geography",
-  //   "difficulty": "easy",
-  //   "type": "multiple"
-  // }
-  //
-  // Tip: Map<String, dynamic> json
-  // Tip: incorrect_answers is a List<dynamic> — cast each item to String.
-  // Tip: Don't worry about HTML entities yet — that's handled in trivia_api.dart.
   factory Question.fromJson(Map<String, dynamic> json) {
-    throw UnimplementedError('TODO(trainee): implement Question.fromJson');
+    return Question(
+      text: json['question'] as String,
+      correctAnswer: json['correct_answer'] as String,
+      incorrectAnswers: (json['incorrect_answers'] as List)
+          .map((e) => e as String)
+          .toList(),
+      category: json['category'] as String,
+      difficulty: json['difficulty'] as String,
+    );
   }
 }
