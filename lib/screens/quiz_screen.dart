@@ -11,12 +11,7 @@ class QuizScreen extends StatefulWidget {
   final int categoryId;
   final String categoryName;
 
-  const QuizScreen({
-    super.key,
-    required this.questions,
-    required this.categoryId,
-    required this.categoryName,
-  });
+  const QuizScreen({super.key, required this.questions, required this.categoryId, required this.categoryName});
 
   @override
   State<QuizScreen> createState() => _QuizScreenState();
@@ -43,25 +38,28 @@ class _QuizScreenState extends State<QuizScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Center(
-              child: Text(
-                '${_currentIndex + 1} / ${widget.questions.length}',
-                style: const TextStyle(fontSize: 16),
-              ),
+              child: Text('${_currentIndex + 1} / ${widget.questions.length}', style: const TextStyle(fontSize: 16)),
             ),
           ),
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 16),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          spacing: 80,
           children: [
-            QuestionCard(text: question.text),
-            const SizedBox(height: 24),
-            for (final answer in _answers)
-              AnswerButton(
-                label: answer,
-                onTap: () => _onAnswerTap(answer, question.correctAnswer),
+            Flexible(child: QuestionCard(text: question.text)),
+            Flexible(
+              child: Center(
+                child: Column(
+                  children: [
+                    for (final answer in _answers)
+                      AnswerButton(label: answer, onTap: () => _onAnswerTap(answer, question.correctAnswer)),
+                  ],
+                ),
               ),
+            ),
           ],
         ),
       ),
@@ -83,10 +81,7 @@ class _QuizScreenState extends State<QuizScreen> {
         categoryId: widget.categoryId,
         categoryName: widget.categoryName,
       );
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => ResultScreen(result: result)),
-      );
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => ResultScreen(result: result)));
     }
   }
 }

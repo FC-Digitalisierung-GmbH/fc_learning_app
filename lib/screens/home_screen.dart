@@ -53,38 +53,28 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: 40,
           children: [
-            const Icon(Icons.quiz, size: 96),
-            const SizedBox(height: 32),
+            const Icon(Icons.quiz_outlined, size: 96),
             const Text(
               'Pick a category and test yourself.',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 16),
             ),
-            const SizedBox(height: 24),
             _buildCategoryField(),
-            const SizedBox(height: 32),
-            ElevatedButton(
+            ElevatedButton.icon(
               onPressed: _canStart() ? _onStartPressed : null,
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-              ),
-              child: _loading
-                  ? const SizedBox(
-                      height: 20,
-                      width: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
+              style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
+              icon: const Icon(Icons.play_arrow),
+              label: _loading
+                  ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2))
                   : const Text('Start', style: TextStyle(fontSize: 18)),
             ),
-            const SizedBox(height: 8),
             OutlinedButton.icon(
               onPressed: _loading ? null : _onLeaderboardPressed,
               icon: const Icon(Icons.leaderboard),
               label: const Text('Leaderboard', style: TextStyle(fontSize: 18)),
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-              ),
+              style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
             ),
           ],
         ),
@@ -93,10 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _onLeaderboardPressed() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const LeaderboardScreen()),
-    );
+    Navigator.push(context, MaterialPageRoute(builder: (_) => const LeaderboardScreen()));
   }
 
   Widget _buildCategoryField() {
@@ -104,37 +91,21 @@ class _HomeScreenState extends State<HomeScreen> {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            'Could not load categories: $_categoriesError',
-            style: const TextStyle(color: Colors.red),
-          ),
+          Text('Could not load categories: $_categoriesError', style: const TextStyle(color: Colors.red)),
           const SizedBox(height: 8),
-          OutlinedButton.icon(
-            onPressed: _loadCategories,
-            icon: const Icon(Icons.refresh),
-            label: const Text('Retry'),
-          ),
+          OutlinedButton.icon(onPressed: _loadCategories, icon: const Icon(Icons.refresh), label: const Text('Retry')),
         ],
       );
     }
     if (_categories == null) {
       return const Center(
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 12),
-          child: CircularProgressIndicator(),
-        ),
+        child: Padding(padding: EdgeInsets.symmetric(vertical: 12), child: CircularProgressIndicator()),
       );
     }
     return DropdownButtonFormField<int>(
       initialValue: _selectedCategory,
-      decoration: const InputDecoration(
-        labelText: 'Category',
-        border: OutlineInputBorder(),
-      ),
-      items: [
-        for (final c in _categories!)
-          DropdownMenuItem(value: c.id, child: Text(c.name)),
-      ],
+      decoration: const InputDecoration(labelText: 'Category', border: OutlineInputBorder()),
+      items: [for (final c in _categories!) DropdownMenuItem(value: c.id, child: Text(c.name))],
       onChanged: (value) {
         if (value == null) return;
         setState(() => _selectedCategory = value);
@@ -142,15 +113,13 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  bool _canStart() =>
-      !_loading && _selectedCategory != null && _categoriesError == null;
+  bool _canStart() => !_loading && _selectedCategory != null && _categoriesError == null;
 
   Future<void> _onStartPressed() async {
     final categoryId = _selectedCategory;
     final categories = _categories;
     if (categoryId == null || categories == null) return;
-    final categoryName =
-        categories.firstWhere((c) => c.id == categoryId).name;
+    final categoryName = categories.firstWhere((c) => c.id == categoryId).name;
     setState(() => _loading = true);
     try {
       final questions = await _api.fetchQuestions(category: categoryId);
@@ -158,18 +127,12 @@ class _HomeScreenState extends State<HomeScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => QuizScreen(
-            questions: questions,
-            categoryId: categoryId,
-            categoryName: categoryName,
-          ),
+          builder: (_) => QuizScreen(questions: questions, categoryId: categoryId, categoryName: categoryName),
         ),
       );
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to load questions: $e')),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to load questions: $e')));
     } finally {
       if (mounted) setState(() => _loading = false);
     }
