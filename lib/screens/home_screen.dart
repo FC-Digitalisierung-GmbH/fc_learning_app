@@ -90,9 +90,9 @@ class _HomeScreenState extends State<HomeScreen> {
     if (_categoriesError != null) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
+        spacing: 8,
         children: [
           Text('Could not load categories: $_categoriesError', style: const TextStyle(color: Colors.red)),
-          const SizedBox(height: 8),
           OutlinedButton.icon(onPressed: _loadCategories, icon: const Icon(Icons.refresh), label: const Text('Retry')),
         ],
       );

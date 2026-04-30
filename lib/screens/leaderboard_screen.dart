@@ -76,9 +76,9 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: 16,
           children: [
             _buildCategoryField(),
-            const SizedBox(height: 16),
             Expanded(child: _buildEntries()),
           ],
         ),
@@ -90,12 +90,12 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
     if (_categoriesError != null) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
+        spacing: 8,
         children: [
           Text(
             'Could not load categories: $_categoriesError',
             style: const TextStyle(color: Colors.red),
           ),
-          const SizedBox(height: 8),
           OutlinedButton.icon(
             onPressed: _loadCategories,
             icon: const Icon(Icons.refresh),
@@ -138,13 +138,13 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
         if (snapshot.hasError) {
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            spacing: 8,
             children: [
               Text(
                 'Could not load scores: ${snapshot.error}',
                 style: const TextStyle(color: Colors.red),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 8),
               OutlinedButton.icon(
                 onPressed: () {
                   final id = _selectedCategoryId;
