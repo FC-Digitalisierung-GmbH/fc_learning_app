@@ -36,6 +36,9 @@ dependencies:
   cupertino_icons: ^1.0.8
   http: ^1.2.2
   html_unescape: ^2.0.0
+  sqflite: ^2.3.3
+  path: ^1.9.0
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_test:
