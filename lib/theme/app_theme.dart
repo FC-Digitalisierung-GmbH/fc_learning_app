@@ -3,12 +3,68 @@ import 'package:flutter/material.dart';
 class AppColors {
   static const Color primary = Color(0xFFED7125);
   static const Color secondary = Color(0xFF2B3D4E);
+  static const Color correct = Color(0xFF2E7D32);
+  static const Color wrong = Color(0xFFC62828);
+}
+
+/// Per-quiz feedback colors. Pulled via `Theme.of(context).extension<QuizFeedbackColors>()`.
+@immutable
+class QuizFeedbackColors extends ThemeExtension<QuizFeedbackColors> {
+  final Color correct;
+  final Color onCorrect;
+  final Color correctContainer;
+  final Color wrong;
+  final Color onWrong;
+  final Color wrongContainer;
+
+  const QuizFeedbackColors({
+    required this.correct,
+    required this.onCorrect,
+    required this.correctContainer,
+    required this.wrong,
+    required this.onWrong,
+    required this.wrongContainer,
+  });
+
+  @override
+  QuizFeedbackColors copyWith({
+    Color? correct,
+    Color? onCorrect,
+    Color? correctContainer,
+    Color? wrong,
+    Color? onWrong,
+    Color? wrongContainer,
+  }) {
+    return QuizFeedbackColors(
+      correct: correct ?? this.correct,
+      onCorrect: onCorrect ?? this.onCorrect,
+      correctContainer: correctContainer ?? this.correctContainer,
+      wrong: wrong ?? this.wrong,
+      onWrong: onWrong ?? this.onWrong,
+      wrongContainer: wrongContainer ?? this.wrongContainer,
+    );
+  }
+
+  @override
+  QuizFeedbackColors lerp(ThemeExtension<QuizFeedbackColors>? other, double t) {
+    if (other is! QuizFeedbackColors) return this;
+    return QuizFeedbackColors(
+      correct: Color.lerp(correct, other.correct, t)!,
+      onCorrect: Color.lerp(onCorrect, other.onCorrect, t)!,
+      correctContainer: Color.lerp(correctContainer, other.correctContainer, t)!,
+      wrong: Color.lerp(wrong, other.wrong, t)!,
+      onWrong: Color.lerp(onWrong, other.onWrong, t)!,
+      wrongContainer: Color.lerp(wrongContainer, other.wrongContainer, t)!,
+    );
+  }
 }
 
 ThemeData buildAppTheme() {
   final primaryContainer = Color.lerp(AppColors.primary, Colors.white, 0.78)!;
   final secondaryContainer = Color.lerp(AppColors.secondary, Colors.white, 0.82)!;
   final surfaceTint = Color.lerp(AppColors.secondary, Colors.white, 0.95)!;
+  final correctContainer = Color.lerp(AppColors.correct, Colors.white, 0.75)!;
+  final wrongContainer = Color.lerp(AppColors.wrong, Colors.white, 0.75)!;
 
   final colorScheme = ColorScheme(
     brightness: Brightness.light,
@@ -108,5 +164,15 @@ ThemeData buildAppTheme() {
       bodyMedium: TextStyle(fontSize: 14, color: AppColors.secondary),
     ),
     iconTheme: const IconThemeData(color: AppColors.secondary),
+    extensions: [
+      QuizFeedbackColors(
+        correct: AppColors.correct,
+        onCorrect: Colors.white,
+        correctContainer: correctContainer,
+        wrong: AppColors.wrong,
+        onWrong: Colors.white,
+        wrongContainer: wrongContainer,
+      ),
+    ],
   );
 }
