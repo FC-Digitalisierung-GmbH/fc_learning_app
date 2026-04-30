@@ -31,9 +31,9 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: 16,
           children: [
             _buildCategoryField(),
-            const SizedBox(height: 16),
             Expanded(child: _buildEntries()),
           ],
         ),

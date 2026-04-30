@@ -27,39 +27,44 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: 24,
           children: [
             const Icon(Icons.quiz_outlined, size: 96),
-            const SizedBox(height: 32),
             const Text(
               'Pick a category and test yourself.',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 16),
             ),
-            const SizedBox(height: 24),
             _buildCategoryField(),
-            const SizedBox(height: 32),
-            ElevatedButton.icon(
-              onPressed: _selectedCategoryId == null ? null : _onStartPressed,
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-              ),
-              icon: const Icon(Icons.play_arrow),
-              label: _loading
-                  ? const SizedBox(
-                      height: 20,
-                      width: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Text('Start', style: TextStyle(fontSize: 18)),
-            ),
-            const SizedBox(height: 8),
-            OutlinedButton.icon(
-              onPressed: _onLeaderboardPressed,
-              icon: const Icon(Icons.leaderboard),
-              label: const Text('Leaderboard', style: TextStyle(fontSize: 18)),
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              spacing: 8,
+              children: [
+                ElevatedButton.icon(
+                  onPressed:
+                      _selectedCategoryId == null ? null : _onStartPressed,
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                  icon: const Icon(Icons.play_arrow),
+                  label: _loading
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Text('Start', style: TextStyle(fontSize: 18)),
+                ),
+                OutlinedButton.icon(
+                  onPressed: _onLeaderboardPressed,
+                  icon: const Icon(Icons.leaderboard),
+                  label:
+                      const Text('Leaderboard', style: TextStyle(fontSize: 18)),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

@@ -53,9 +53,9 @@ class _QuizScreenState extends State<QuizScreen> {
         padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 16),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          spacing: 24,
           children: [
             Flexible(child: QuestionCard(text: question.text)),
-            const SizedBox(height: 24),
             Flexible(
               child: Center(
                 child: Column(
