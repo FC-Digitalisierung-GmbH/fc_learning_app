@@ -1,33 +1,45 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to any coding agent when working with code in this repository.
 
-## Project
+## General Guidelines
 
-Flutter trainee learning project. Stock `flutter create` counter-app scaffold, intended as a starting point for FC trainees learning Flutter — not a production app. All app code currently lives in `lib/main.dart` (`MyApp` → `MyHomePage`/`_MyHomePageState`).
+- **NEVER commit or push any code! You can read from the git history, but all executive git functionality (checkout, pull, commit, push, etc.) is forbidden!
+  If there should be a case where it is a necessity need to do a git operation, you ask for permission first.**
 
-Dart SDK: `^3.11.0`. Flutter dependencies: only `cupertino_icons` (runtime) and `flutter_lints` (dev).
+- **Use the local folder ".ai" for any meta files that are used for agentic development like plans (`.ai/plans`), documentation (`.ai/docs`) or notes (`.ai/notes`).
+  Ignore agent specific behavior in that regard. If a feature (e.g. unit testing) requires multiple plans for example, create a subfolder (`.ai/plans/unit_testing`) inside the AI subfolder.**
 
-## Commands
+## Architecture
 
-```bash
-flutter pub get              # install dependencies
-flutter run                  # run on attached device/emulator (hot reload via `r`)
-flutter analyze              # lint / static analysis (uses analysis_options.yaml)
-flutter test                 # run all tests
-flutter test test/widget_test.dart   # run a single test file
-flutter test --name "<substring>"    # run tests matching a name
-flutter build apk            # Android release build
-flutter build ios            # iOS build (mac only)
-```
+**Clean Architecture, feature-module layout.**
 
-Targets configured: `android/`, `ios/`. No web/desktop folders.
+## Code Guidelines
 
-## Linting
+- **When implementing new widgets, always check if there are existing Widgets (mostly prefixed "Prio")
+  that can be used here or fit the purpose (normally under `lib/Components/`), and use our theming and style**
 
-`analysis_options.yaml` includes `package:flutter_lints/flutter.yaml`. No custom rule overrides — default Flutter lint set applies.
+- **Check `lib/Utils` when implementing new features if there is existing functionality to solve a problem**
 
-## Notes for editing
+### Layers
 
-- `lib/main.dart` currently contains two minor syntax issues from the source: line 31 (`.fromSeed(...)` missing `ColorScheme` prefix) and line 105 (`.center` missing `MainAxisAlignment` prefix). Run `flutter analyze` before claiming changes compile.
-- No state management, routing, networking, or persistence in place yet — add structure (e.g. split files under `lib/`) when introducing features beyond the counter.
+| Layer          | Location                                       | Role                                      |
+|----------------|------------------------------------------------|-------------------------------------------|
+| Presentation   | `lib/<Feature>/*_page.dart`, `lib/Components/` | UI, shared widgets                        |
+| Business Logic | `lib/<Feature>/*_service.dart/`                | API calls, logic methods called by the ui |
+| Data           | `lib/<Feature>/models/*_model.dart`            | DTOs                                      |
+| API            | `lib/api_client.dart/`                         | HTTP client                               |
+
+### Key Packages
+
+- **Routing:** `go_router`
+- **Networking:** `http`
+
+### Linting
+
+`analysis_options.yaml` enforces:
+- Single quotes
+- `const` constructors where possible
+- Exhaustive switch cases
+
+Generated files and `api/**` are excluded from analysis.
