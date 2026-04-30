@@ -1,5 +1,5 @@
-import 'package:fc_learning_app/database/app_database.dart';
-import 'package:fc_learning_app/leaderboard/leaderboard_entry.dart';
+import 'package:fc_learning_app/models/leaderboard_entry.dart';
+import 'package:fc_learning_app/services/app_database.dart';
 
 /// Reads and writes leaderboard rows from the local sqflite database.
 class LeaderboardRepository {

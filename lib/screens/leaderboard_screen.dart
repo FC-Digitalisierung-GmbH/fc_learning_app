@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import 'package:fc_learning_app/leaderboard/leaderboard_entry.dart';
-import 'package:fc_learning_app/leaderboard/leaderboard_repository.dart';
+import 'package:fc_learning_app/models/leaderboard_entry.dart';
+import 'package:fc_learning_app/services/leaderboard_repository.dart';
 import 'package:fc_learning_app/models/category.dart';
 import 'package:fc_learning_app/services/trivia_api.dart';
 

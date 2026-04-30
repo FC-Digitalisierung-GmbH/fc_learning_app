@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:fc_learning_app/leaderboard/leaderboard_screen.dart';
+import 'package:fc_learning_app/screens/leaderboard_screen.dart';
 import 'package:fc_learning_app/models/category.dart';
 import 'package:fc_learning_app/screens/quiz_screen.dart';
 import 'package:fc_learning_app/services/trivia_api.dart';
